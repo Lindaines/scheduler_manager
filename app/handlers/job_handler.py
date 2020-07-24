@@ -37,3 +37,17 @@ class JobHandler:
             return self._response.send(
                 data=None, message=str(e), code="error", status=500
             )
+
+    def get(self, start_datetime: str, end_datetime: str) -> Response:
+        try:
+            result = self.controller.get_jobs_by_date_interval(start_datetime, end_datetime)
+            return self._response.send(
+                data=result,
+                message="Jobs list",
+                code="success",
+                status=200,
+            )
+        except Exception as e:
+            return self._response.send(
+                data=None, message=str(e), code="error", status=500
+            )

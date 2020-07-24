@@ -32,4 +32,4 @@ class Job(Resource):
         """
         start_time = request.args.get('start_time')
         end_time = request.args.get('end_time')
-        return self.health.verify()
+        return self.job.get(start_time, end_time)

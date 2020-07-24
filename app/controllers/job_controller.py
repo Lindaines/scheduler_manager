@@ -1,5 +1,6 @@
 from datetime import datetime
 from app.persistences.mongodb_persistence import MongoDB
+from app.utils import filter_job_result
 import settings
 
 
@@ -9,7 +10,8 @@ class JobController:
         self.configs = settings.load_config()
 
     def _agregate_result_by_expecteded_execution_time_sum(self, jobs: list):
-        pass
+        return filter_job_result.get_result_filtered(jobs)
+
     def _convert_date(self, date):
         return datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
 
@@ -37,6 +39,8 @@ class JobController:
                 query = {"maximum_date_finish": {"$gte": self._convert_date(start_datetime),
                                                  "$lte": self._convert_date(end_datetime)}}
                 result = self._mongo.find_all(self.configs.MONGO_COLLECTION_JOBS, query, sort_key="maximum_date_finish")
-            result = self._mongo.find_all(self.configs.MONGO_COLLECTION_JOBS, sort_key="maximum_date_finish")
+            else:
+                result = self._mongo.find_all(self.configs.MONGO_COLLECTION_JOBS, sort_key="maximum_date_finish")
+            return self._agregate_result_by_expecteded_execution_time_sum(result)
         except Exception as e:
             raise Exception(e)

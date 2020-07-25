@@ -68,7 +68,7 @@ class JobHandler:
 
     def update(self, job: dict) -> Response:
         try:
-            result = self.controller.update_job(job.get('id'), job.get('status'))
+            result = self.controller.update_job(job.get('_id'), job.get('status_job'))
             return self._response.send(
                 data=result,
                 message="Job Updated",

@@ -1,11 +1,15 @@
 from datetime import datetime
 from app.persistences.mongodb_persistence import MongoDB
 from app.utils import filter_job_result
+from bson.objectid import ObjectId
+from app.persistences.rabbitmq import RabbitMQClient
+from app.helpers import job
 import settings
 
 
 class JobController:
     def __init__(self):
+        self.rabbitmq = RabbitMQClient()
         self._mongo = MongoDB()
         self.configs = settings.load_config()
 
@@ -25,7 +29,10 @@ class JobController:
             "expected_time_alert_triggered": False,
             "status_job": "CREATED"
         }
+
         try:
+            job['id'] = id_job
+            self.rabbitmq.publish()
             inserted_id = self._mongo.save_one(
                 document, collection=self.configs.MONGO_COLLECTION_JOBS
             )
@@ -57,11 +64,11 @@ class JobController:
         except Exception as e:
             raise Exception(e)
 
-    def update_job(self, id_job: str, new_status: str):
+    def update_job(self, id: str, new_status: str):
         try:
             result = self._mongo.update_one(
                 self.configs.MONGO_COLLECTION_JOBS,
-                {"id_job": id_job},
+                {"_id": ObjectId(id)},
                 {"$set": {"status_job": new_status}}, upsert=True,
             )
             return result

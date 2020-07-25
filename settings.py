@@ -25,6 +25,16 @@ class Config(object):
     MONGO_COLLECTION_JOBS = os.getenv("MONGO_COLLECTION_JOBS", "jobs")
     MONGO_CONNECT_TIMEOUT = int(os.getenv("MONGO_CONNECT_TIMEOUT", "10000"))
 
+    # Config RabbitMQ
+    RABBIT_HOST = os.getenv("RABBIT_HOST", "localhost")
+    RABBIT_PORT = int(os.getenv("RABBIT_PORT", 5672))
+    RABBIT_MANAGEMENT_PORT = int(os.getenv("RABBIT_MANAGEMENT_PORT", 15672))
+    RABBIT_USER = os.getenv("RABBIT_USER", "rabbitmq")
+    RABBIT_PASSWORD = os.getenv("RABBIT_PASSWORD", "rabbitmq")
+    RABBIT_VHOST = os.getenv("RABBIT_VHOST", "/")
+    RABBIT_HEARTBEAT = int(os.getenv("RABBIT_HEARTBEAT", 80))
+    EXCHANGE_NAME = os.getenv("EXCHANGE_NAME", "exc-worker")
+
     # Restplus
     SWAGGER_TITLE = os.getenv("SWAGGER_TITLE", "Job Scheduler Manager")
     SWAGGER_DESCRIPTION = os.getenv(
@@ -35,6 +45,12 @@ class Config(object):
     RESTPLUS_MASK_SWAGGER = False
     ERROR_INCLUDE_MESSAGE = False
     ERROR_404_HELP = False
+
+    #Job
+    DESCRIPTION_ALLOWED_SPLITTED_BY_COMMMA = os.getenv("DESCRIPTION_ALLOWED_SPLITTED_BY_COMMMA",
+        "LEGACY_DATA_IMPORT,FUND_DATA_IMPORT,INTEGRATION_DATA_IMPORT")
+    MAX_TIME_ALLOWED = int(os.getenv("MAX_TIME_ALLOWED", 8))
+
 
 
 class Development(Config):

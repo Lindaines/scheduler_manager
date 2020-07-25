@@ -38,14 +38,42 @@ class JobHandler:
                 data=None, message=str(e), code="error", status=500
             )
 
-    def get(self, start_datetime: str, end_datetime: str) -> Response:
+    def get_grouped_jobs(self, start_datetime: str, end_datetime: str) -> Response:
         try:
-            result = self.controller.get_jobs_by_date_interval(start_datetime, end_datetime)
+            result = self.controller.get_jobs_grouped(start_datetime, end_datetime)
             return self._response.send(
                 data=result,
                 message="Jobs list",
                 code="success",
                 status=200,
+            )
+        except Exception as e:
+            return self._response.send(
+                data=None, message=str(e), code="error", status=500
+            )
+
+    def get(self, start_datetime: str, end_datetime: str) -> Response:
+        try:
+            result = self.controller.get_jobs(start_datetime, end_datetime)
+            return self._response.send(
+                data=result,
+                message="Jobs list",
+                code="success",
+                status=200,
+            )
+        except Exception as e:
+            return self._response.send(
+                data=None, message=str(e), code="error", status=500
+            )
+
+    def update(self, job: dict) -> Response:
+        try:
+            result = self.controller.update_job(job.get('id'), job.get('status'))
+            return self._response.send(
+                data=result,
+                message="Job Updated",
+                code="success",
+                status=204,
             )
         except Exception as e:
             return self._response.send(

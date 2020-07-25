@@ -28,8 +28,17 @@ class Job(Resource):
 
     def get(self):
         """
-        Create a new job
+        Get one or more jobs
         """
         start_time = request.args.get('start_time')
         end_time = request.args.get('end_time')
-        return self.job.get(start_time, end_time)
+        if request.args.get('grouped'):
+            return self.job.get_grouped_jobs(start_time, end_time)
+        else:
+            return self.job.get(start_time, end_time)
+
+    def put(self):
+        """
+        Update a job status
+        """
+        return self.job.update(request.json)

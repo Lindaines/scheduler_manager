@@ -33,7 +33,19 @@ class JobController:
         except Exception as e:
             raise Exception(e)
 
-    def get_jobs_by_date_interval(self, start_datetime: str, end_datetime: str):
+    def get_jobs(self, start_datetime: str, end_datetime: str):
+        try:
+            if start_datetime and datetime:
+                query = {"maximum_date_finish": {"$gte": self._convert_date(start_datetime),
+                                                 "$lte": self._convert_date(end_datetime)}}
+                result = self._mongo.find_all(self.configs.MONGO_COLLECTION_JOBS, query, sort_key="maximum_date_finish")
+            else:
+                result = self._mongo.find_all(self.configs.MONGO_COLLECTION_JOBS, sort_key="maximum_date_finish")
+            return result
+        except Exception as e:
+            raise Exception(e)
+
+    def get_jobs_grouped(self, start_datetime: str, end_datetime: str):
         try:
             if start_datetime and datetime:
                 query = {"maximum_date_finish": {"$gte": self._convert_date(start_datetime),
@@ -42,5 +54,16 @@ class JobController:
             else:
                 result = self._mongo.find_all(self.configs.MONGO_COLLECTION_JOBS, sort_key="maximum_date_finish")
             return self._agregate_result_by_expecteded_execution_time_sum(result)
+        except Exception as e:
+            raise Exception(e)
+
+    def update_job(self, id_job: str, new_status: str):
+        try:
+            result = self._mongo.update_one(
+                self.configs.MONGO_COLLECTION_JOBS,
+                {"id_job": id_job},
+                {"$set": {"status_job": new_status}}, upsert=True,
+            )
+            return result
         except Exception as e:
             raise Exception(e)

@@ -15,9 +15,9 @@ def get_first_subset_that_satisfies_sum(jobs, max_value, sub_jobs=[]):
 def get_result_filtered(jobs: list):
     final_list = []
     while len(jobs) > 1:
-        b = get_first_subset_that_satisfies_sum(jobs, 8)
-        if b:
-            sorted_sub_list = sorted(b, key=lambda k: k['maximum_date_finish'])
+        subset = get_first_subset_that_satisfies_sum(jobs, 8)
+        if subset:
+            sorted_sub_list = sorted(subset, key=lambda k: k['maximum_date_finish'])
             final_list.append(sorted_sub_list)
             for item in sorted_sub_list:
                 jobs.remove(item)

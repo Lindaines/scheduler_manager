@@ -23,7 +23,7 @@ def _validate_expected_time(data):
         raise ValidationError(f"Max time allowed is {max_time_allowed} hours")
 
 
-def _validate_max_data(data):
+def _validate_date(data):
     if data <= datetime.now():
         raise ValidationError("Max data must be greater than now")
 
@@ -35,7 +35,8 @@ def _validate_status(data):
 
 class JobSchema(Schema):
     description_job = fields.String(required=True, validate=_validate_description)
+    start_date = fields.DateTime(required=True, validate=_validate_date)
     maximum_date_finish = fields.DateTime(required=True)
-    expected_time_in_hours_to_finish = fields.DateTime(required=True, validate=_validate_max_data)
+    expected_time_in_hours_to_finish = fields.DateTime(required=True, validate=_validate_date)
     status_job = fields.String(required=True)
     expected_time_alert_triggered = fields.Bool(required=False)

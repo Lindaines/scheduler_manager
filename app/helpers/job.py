@@ -1,8 +1,9 @@
 package = {
     "id_job": None,
-    "status_job": None
+    "status_job": None,
+    "start_date": None
 }
 
-CREATE = "create"
-CANCEL = "cancel"
-DELETE = "delete"
+CREATE = "CREATE"
+CANCEL = "CANCEL"
+DELETE = "DELETE"

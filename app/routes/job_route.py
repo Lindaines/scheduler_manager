@@ -19,7 +19,7 @@ class Job(Resource):
         super().__init__(*args, **kwargs)
         self.job = JobHandler()
 
-    @api.response(code=200, description="success", schema=JobSchema)
+    @api.response(code=200, description="success", schema=schema)
     def post(self):
         """
         Create a new job

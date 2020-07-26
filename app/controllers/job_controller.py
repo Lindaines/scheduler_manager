@@ -19,10 +19,9 @@ class JobController:
     def _convert_date(self, date):
         return datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
 
-    def create_job(self, id_job: str, description_job: str, maximum_date_finish: str,
-                   expected_time_in_hours_to_finish: str):
+    def create_job(self, description_job: str, maximum_date_finish: str,
+                   expected_time_in_hours_to_finish: str, start_date: str):
         document = {
-            "id_job": id_job,
             "description_job": description_job,
             "maximum_date_finish": self._convert_date(maximum_date_finish),
             "expexted_time_in_hours_to_finish": expected_time_in_hours_to_finish,
@@ -31,11 +30,14 @@ class JobController:
         }
 
         try:
-            job['id'] = id_job
-            self.rabbitmq.publish()
             inserted_id = self._mongo.save_one(
                 document, collection=self.configs.MONGO_COLLECTION_JOBS
             )
+            job.package['id_job'] = str(inserted_id)
+            job.package['start_date'] = start_date
+            job.package['status_job'] = job.CREATE
+            self.rabbitmq.publish(exchange=self.configs.EXCHANGE_NAME, message=job.package,
+                                  routing_key=description_job)
             return inserted_id
         except Exception as e:
             raise Exception(e)
@@ -64,13 +66,18 @@ class JobController:
         except Exception as e:
             raise Exception(e)
 
-    def update_job(self, id: str, new_status: str):
+    def update_job(self, id_job: str, new_status: str, description: str):
         try:
             result = self._mongo.update_one(
                 self.configs.MONGO_COLLECTION_JOBS,
-                {"_id": ObjectId(id)},
+                {"_id": ObjectId(id_job)},
                 {"$set": {"status_job": new_status}}, upsert=True,
             )
+            job.package['id_job'] = id_job
+            job.package['status_job'] = new_status
+            self.rabbitmq.publish(exchange=self.configs.EXCHANGE_NAME, message=job.package,
+                                  routing_key=description)
+
             return result
         except Exception as e:
             raise Exception(e)

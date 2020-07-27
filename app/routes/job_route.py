@@ -47,7 +47,7 @@ class Job(Resource):
                      'grouped': 'bool indicating if the jobs must be grouped in sublists'})
     def get(self):
         """
-        Get all jobs possibly filtered by window update and/or grouped by expected finish time job sublists that sum 8 hours max each
+        Get jobs possibly filtered by window update and grouped or not by expected finish time job sublists that sum 8 hours max each
         """
         start_time = request.args.get('start_time')
         end_time = request.args.get('end_time')
@@ -55,7 +55,6 @@ class Job(Resource):
         if isinstance(grouped, str):
             grouped = False if grouped.upper() == "FALSE" else True
         data, errors = JobGetSchema().load({'start_time': start_time, 'end_time': end_time, 'grouped': grouped})
-
         if errors:
             return Response().send(
                 data=None, status=400, code="bad_request", message=errors

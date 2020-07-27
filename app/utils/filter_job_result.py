@@ -19,17 +19,17 @@ def get_result_filtered(jobs: list):
     #    jobs (list): A list of jobs
 
     # Returns:
-    #    result(list):The expected list asked in the test project.
-    final_list = []
+    #    grouped_jobs_by_window_time(list):The expected list asked in the test project.
+    grouped_jobs_by_window_time = []
     while len(jobs) > 1:
         subset = get_first_subset_that_satisfies_sum(jobs, 8)
         if subset:
             sorted_sub_list = sorted(subset, key=lambda k: k['maximum_date_finish'])
-            final_list.append(sorted_sub_list)
+            grouped_jobs_by_window_time.append(sorted_sub_list)
             for item in sorted_sub_list:
                 jobs.remove(item)
         else:
             for item in jobs:
-                final_list.append([item])
+                grouped_jobs_by_window_time.append([item])
             break
-    return sorted(final_list, key=lambda x: x[0].get('maximum_date_finish'))
+    return sorted(grouped_jobs_by_window_time, key=lambda x: x[0].get('maximum_date_finish'))

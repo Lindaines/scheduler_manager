@@ -5,12 +5,12 @@ from app.schemas.routes import response_serializer
 
 class HealthSchema:
     def __init__(self):
-        self._name = "0-Health"
+        self._name = "Health"
 
     @property
     def health(self):
         """
-        Serializer do health
+        Health's serializer
         """
         return api.inherit(self._name, self._obj_health)
 

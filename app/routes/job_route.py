@@ -3,27 +3,43 @@ from flask import request
 
 from app.handlers.job_handler import JobHandler
 from app.restplus import api
-from app.schemas.routes.job_schema import JobSchema
+from flask_restplus import Resource, fields
 
-ns = api.namespace(path="/jobs", name="Jobs", description="CRUD JOBS")
+from app.schemas.routes.job_schema import JobSchema, JobModel
+from app.utils.format_response_api import Response
 
-schema = JobSchema()
+model = api.model('Job', {
+    'description_job': fields.String,
+    'maximum_date_finish': fields.DateTime,
+    'expected_time_in_hours_to_finish': fields.Integer(max=8),
+})
+schema = JobModel()
+
+ns = api.namespace(path="/jobs", name="Jobs", description="Create and get jobs")
 
 
 @ns.route("")
 @api.doc(security=None)
 @api.response(code=500, description="internal_error")
 @api.response(code=404, description="not_found")
+@api.response(code=400, description="bad_request")
 class Job(Resource):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.job = JobHandler()
 
-    @api.response(code=200, description="success", schema=schema)
+    @api.expect(model)
+    @api.response(code=201, description="created", model=schema.response_job)
     def post(self):
         """
         Create a new job
         """
+        data, errors = JobSchema().loads(request.data)
+
+        if errors:
+            return Response().send(
+                data=None, status=400, code="bad_request", message=errors
+            )
         return self.job.create(request.json)
 
     def get(self):

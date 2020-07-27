@@ -11,7 +11,7 @@ class JobHandler:
         try:
             result = self.controller.create_job(data.get('description_job'),
                                                 data.get('maximum_date_finish'),
-                                                data.get('expexted_time_in_hours_to_finish'),
+                                                data.get('expected_time_in_hours_to_finish'),
                                                 data.get('start_date'))
             return self._response.send(
                 data=result,

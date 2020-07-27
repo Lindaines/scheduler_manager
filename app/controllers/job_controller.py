@@ -17,7 +17,7 @@ class JobController:
         return filter_job_result.get_result_filtered(jobs)
 
     def _convert_date(self, date):
-        return datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+        return datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
 
     def create_job(self, description_job: str, maximum_date_finish: str,
                    expected_time_in_hours_to_finish: str, start_date: str):

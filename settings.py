@@ -49,7 +49,6 @@ class Config(object):
     #Job
     DESCRIPTION_ALLOWED_SPLITTED_BY_COMMMA = os.getenv("DESCRIPTION_ALLOWED_SPLITTED_BY_COMMMA",
         "legacy_import,fund_data_import,integration_fund_data_import")
-    MAX_TIME_ALLOWED = int(os.getenv("MAX_TIME_ALLOWED", 8))
 
 
 

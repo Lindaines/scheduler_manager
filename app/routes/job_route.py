@@ -1,11 +1,11 @@
-from flask_restplus import Resource
 from flask import request
 
 from app.handlers.job_handler import JobHandler
 from app.restplus import api
 from flask_restplus import Resource, fields
 
-from app.schemas.routes.job_schema import JobSchema, JobModel
+from app.schemas.routes.job_schema import JobSchema, JobGetSchema
+from app.schemas.models.job_schema import JobModel
 from app.utils.format_response_api import Response
 
 model = api.model('Job', {
@@ -42,19 +42,26 @@ class Job(Resource):
             )
         return self.job.create(request.json)
 
+    @api.doc(params={'start_time': 'Start date window in format 2020-07-27T15:10:21',
+                     'end_time': 'End date window in format 2020-07-27T15:10:21',
+                     'grouped': 'bool indicating if the jobs must be grouped in sublists'})
     def get(self):
         """
-        Get one or more jobs
+        Get all jobs possibly filtered by window update and/or grouped by expected finish time job sublists that sum 8 hours max each
         """
         start_time = request.args.get('start_time')
         end_time = request.args.get('end_time')
-        if request.args.get('grouped'):
+        grouped = request.args.get('grouped')
+        if isinstance(grouped, str):
+            grouped = False if grouped.upper() == "FALSE" else True
+        data, errors = JobGetSchema().load({'start_time': start_time, 'end_time': end_time, 'grouped': grouped})
+
+        if errors:
+            return Response().send(
+                data=None, status=400, code="bad_request", message=errors
+            )
+
+        if grouped:
             return self.job.get_grouped_jobs(start_time, end_time)
         else:
             return self.job.get(start_time, end_time)
-
-    def put(self):
-        """
-        Update a job status
-        """
-        return self.job.update(request.json)

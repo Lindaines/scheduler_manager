@@ -1,6 +1,6 @@
 from marshmallow import ValidationError, Schema, fields
 from marshmallow.validate import Range
-from datetime import datetime
+from datetime import datetime, timedelta
 import settings
 
 configs = settings.load_config()
@@ -36,8 +36,9 @@ def _validate_max_data(data):
         data = _get_formated_date(data)
     except ValueError:
         raise ValidationError("Invalid format for max value")
-    if data <= datetime.now():
-        raise ValidationError("The max data must be greater than now")
+    diff = data - datetime.now()
+    if diff.seconds < 28800:
+        raise ValidationError("Due the timeout, the difference between now and max data must be at least 8 hours")
 
 
 class JobSchema(Schema):
@@ -50,5 +51,3 @@ class JobGetSchema(Schema):
     grouped = fields.Boolean(required=True)
     start_time = fields.String(required=True, validate=_validate_date_format)
     end_time = fields.String(required=True, validate=_validate_date_format)
-
-

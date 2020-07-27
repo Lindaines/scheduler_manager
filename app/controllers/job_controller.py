@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from app.persistences.mongodb_persistence import MongoDB
 from app.utils import filter_job_result
 from bson.objectid import ObjectId
@@ -19,16 +19,20 @@ class JobController:
     def _convert_date(self, date):
         try:
             return datetime.strptime(date.strip(), '%Y-%m-%dT%H:%M:%S')
-        except:
+        except ValueError:
             return datetime.strptime(date.strip()[:19], '%Y-%m-%dT%H:%M:%S')
 
+    def _convert_date_to_str(self, date):
+        return date.strftime('%Y-%m-%dT%H:%M:%S')
+
     def create_job(self, description_job: str, maximum_date_finish: str,
-                   expected_time_in_hours_to_finish: str, start_date: str):
+                   expected_time_in_hours_to_finish: str):
+        start_date = self._convert_date(maximum_date_finish) - timedelta(hours=8)
         document = {
             "description_job": description_job,
             "maximum_date_finish": self._convert_date(maximum_date_finish),
             "expexted_time_in_hours_to_finish": int(expected_time_in_hours_to_finish),
-            "expected_time_alert_triggered": False,
+            "start_date": start_date,
             "status_job": "CREATED"
         }
 
@@ -37,7 +41,7 @@ class JobController:
                 document, collection=self.configs.MONGO_COLLECTION_JOBS
             )
             job.package['id_job'] = str(inserted_id)
-            job.package['start_date'] = start_date
+            job.package['start_date'] = self._convert_date_to_str(start_date)
             job.package['status_job'] = job.CREATE
             self.rabbitmq.publish(exchange=self.configs.EXCHANGE_NAME, message=job.package,
                                   routing_key=description_job)

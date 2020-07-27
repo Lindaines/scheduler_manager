@@ -24,7 +24,7 @@ class JobController:
         document = {
             "description_job": description_job,
             "maximum_date_finish": self._convert_date(maximum_date_finish),
-            "expexted_time_in_hours_to_finish": expected_time_in_hours_to_finish,
+            "expexted_time_in_hours_to_finish": int(expected_time_in_hours_to_finish),
             "expected_time_alert_triggered": False,
             "status_job": "CREATED"
         }

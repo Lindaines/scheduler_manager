@@ -13,6 +13,13 @@ def get_first_subset_that_satisfies_sum(jobs, max_value, sub_jobs=[]):
 
 
 def get_result_filtered(jobs: list):
+    # Returns a list of sublists that the sum of its elements is less or equal 8.
+
+    # Parameters:
+    #    jobs (list): A list of jobs
+
+    # Returns:
+    #    result(list):The expected list asked in the test project.
     final_list = []
     while len(jobs) > 1:
         subset = get_first_subset_that_satisfies_sum(jobs, 8)
@@ -25,29 +32,4 @@ def get_result_filtered(jobs: list):
             for item in jobs:
                 final_list.append([item])
             break
-    return final_list
-
-# print(get_result_filtered([1, 1, 2, 3, 4, 5, 6, 8, 7, 2, 1, 5, 6, 4]))
-
-# import datetime
-# import random
-#
-#
-# def random_date():
-#     start = datetime.datetime(year=2020, month=7, day=24)
-#     end = datetime.datetime(year=2020, month=8, day=24)
-#     return start + datetime.timedelta(
-#         seconds=random.randint(0, int((end - start).total_seconds())),
-#     )
-#
-#
-# jobs = []
-# for i in range(10):
-#     jobs.append({
-#         "maximum_date_finish": random_date(),
-#         "expexted_time_in_hours_to_finish": random.randint(1, 8)
-#     })
-#
-# r = get_result_filtered(jobs)
-# for item in r:
-#     print(item)
+    return sorted(final_list, key=lambda x: x[0].get('maximum_date_finish'))

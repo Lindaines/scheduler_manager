@@ -23,6 +23,8 @@ Instalar dependências(rodar na raíz do projeto, versão do Python é 3.7)
 ````bash
 pip install -r requirements.txt
 ````
+- Criar uma exchange chamada "exc-worker" no rabbitmq. 
+
 
 ## Rodar Projeto <a name="run"></a>
 Comando para iniciar aplicação

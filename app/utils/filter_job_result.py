@@ -1,6 +1,3 @@
-from datetime import datetime
-
-
 def get_first_subset_that_satisfies_sum(jobs, max_value):
     aggregated = 0
     sub_jobs = []
@@ -29,7 +26,3 @@ def get_result_filtered(jobs: list):
             for job in jobs.copy():
                 jobs.remove(job)
     return sorted(grouped_jobs_by_window_time, key=lambda x: x[0].get('maximum_date_finish'))
-
-
-
-

@@ -25,3 +25,4 @@ sentinels==1.0.0
 six==1.15.0
 Werkzeug==0.16.1
 zipp==3.1.0
+pytest==6.0.1

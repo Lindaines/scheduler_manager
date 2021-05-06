@@ -4,7 +4,7 @@ bson==0.5.8
 click==7.1.2
 colorama==0.4.3
 Flask==1.1.1
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 flask-marshmallow==0.10.1
 flask-restplus==0.13.0
 importlib-metadata==1.7.0
